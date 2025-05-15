@@ -1,27 +1,43 @@
 <script setup lang="ts">
   const route = useRoute();
+  const { cars } = useCars();
   const { toTitleCase } = useUtilities();
   useHead({
     title: toTitleCase(route.params.name),
   });
 
+  // 특정 페이지에만 적용할 레이아웃을 설정
   definePageMeta({
     layout: "custom",
   });
+
+  const car = computed(() => {
+    return cars.find((car) => {
+      return car.id === parseInt(route.params.id);
+    });
+  });
+
+  // Throwing Server Error
+  if (!car.value) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Car with id of ${route.params.id} not found",
+      fatal: true,
+    });
+  }
 </script>
 
 <template>
-  <div
-    class="mx-auto mt-4 max-w-7xl space-y-4 px-4 xs:px-8 sm:px-10 lg:px-16 pb-16 w-3/5"
-  >
+  <div v-if="car">
+    {{ route.params.name }} - {{ route.params.id }}
     <!-- CAR HERO -->
-    <CarDetailHero />
+    <CarDetailHero :car="car" />
     <!-- CAR HERO -->
     <!-- CAR ATTRIBUTES -->
-    <CarDetailAttribute />
+    <CarDetailAttribute :feature="car.feature" />
     <!-- CAR ATTRIBUTES -->
     <!-- CAR DESCRISPTION -->
-    <CarDetailDescription />
+    <CarDetailDescription :description="car.description" />
     <!-- CAR DESCRISPTION -->
     <!-- CAR CONTACT -->
     <CarDetailContact />

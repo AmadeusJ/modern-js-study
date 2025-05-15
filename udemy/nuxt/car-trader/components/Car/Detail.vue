@@ -1,6 +1,6 @@
 <template>
   <div class="mt-10">
-    <img
+    <NuxtImg
       src="https://carwow-uk-wp-3.imgix.net/Volvo-XC40-white-scaled.jpg"
       class="w-full"
       alt=""
